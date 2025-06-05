@@ -1,15 +1,35 @@
 import React,{ useState } from "react";
 import { Notebook } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    setError("");
+
+    if (!email || !password) {
+      return setError("Please fill in all fields");
+    }
+
+    try {
+      setLoading(true);
+      await login(email, password);
+      navigate("/dashboard");
+    } catch (err) {
+      setError('Failed to create account: ' + (err.message || "Please try again")
+    );
+    } finally {
+      setLoading(false);
+
+  }
   };
 
   return (
@@ -20,6 +40,12 @@ function Login() {
           <h2 className="text-2xl font-bold text-gray-800">Welcome back!</h2>
           <p className="text-gray-600">Sign in to access your notes</p>
         </div>
+        {error && (
+          <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
+            {error}{" "}
+          </div>
+        )}
+
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -57,8 +83,9 @@ function Login() {
           <button
             className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition duration-200"
             type="submit"
+            disabled={loading}
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
