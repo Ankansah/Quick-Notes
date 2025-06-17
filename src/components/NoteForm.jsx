@@ -35,7 +35,7 @@ function NoteForm() {
       setContent("");
       setSuccess(true);
 
-      setTimeout(() => setSucce(false), 3000);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError("Failed to create note" + err.message);
     } finally {
@@ -92,7 +92,7 @@ function NoteForm() {
             id="content"
             type="text"
             value={content}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setContent(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="write your note here"
             rows={4}
